@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="0.2 1.0" codebase="http://www.cs.ucsb.edu/~omasri/cs56/S12/issues/0000763/jws" href="GuitarTuner.jnlp">
+ <information>
+   <title>UCSB CS56 S12 CP2 Omar Masri GuitarTuner</title>
+   <vendor>UCSB CS56</vendor>
+   <homepage href="." />
+   <description>A simple guitar tuner GUI</description>
+  <offline-allowed />
+ </information>
+ <resources>
+  <j2se version="1.3+" />
+  <jar href="0000763.jar" download="lazy"/>
+ </resources>
+  <application-desc main-class="edu.ucsb.cs56.s12.choice.issue763.GuitarTuner"/>
+</jnlp>

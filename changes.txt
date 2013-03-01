@@ -1,0 +1,20 @@
+Omar Masri 
+Choice Points Assignment Issue 672, S12 
+
+* Changes Summary *
+
+- The Sound class now works as a thread to allow user to continue to interact with the GUI while a sound is playing.
+
+- Now includes an image of a fretboard lined up with the appropriate buttons for each string.
+
+- Each button now has a separate ActionListener. 
+
+- Now each time the user clicks a sound button, it stops/interrupts the current Sound thread (if one is running),
+  creates a new Sound thread, and runs the thread.
+  
+- The application will now have the look and feel of the OS it is running on.
+  
+  
+
+  
+ 
