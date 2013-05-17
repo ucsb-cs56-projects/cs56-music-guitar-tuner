@@ -1,4 +1,4 @@
-package edu.ucsb.cs56.s12.choice.issue763;
+package edu.ucsb.cs56.projects.music.guitar_tuner;
 import javax.sound.midi.*;
 
 /**  Handles the sound for guitar tuner
