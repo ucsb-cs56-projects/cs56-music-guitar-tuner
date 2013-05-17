@@ -12,7 +12,7 @@
 	<property name  = "webBaseURL"
 		value="http://www.cs.ucsb.edu/~${env.USER}/cs56/"/>
 	
-	<property name	= "projectName" value="0000763" />
+	<property name	= "projectName" value="edu/ucsb/${course}/projects/music/guitar_tuner" />
 	<property name	= "javadocDest"	value="${webRoot}/${projectName}/javadoc" />
 	<property name	= "javadocURL" 	value="${webBaseURL}/${projectName}/javadoc"/>
 	<property name  = "mainClass"   
