@@ -1,19 +1,24 @@
 <project default="compile">
 
 	<!-- build.xml for lab05,CS56,S12
-	     	name: Omar Masri	-->
+	     	name: Omar Masri
+	     	edited: Eric Huang for CS56, S13
+	     		-->
 
 
 	<property environment="env"/>
-	<property name  = "webRoot"     value="${env.HOME}/public_html/cs56/S12/issues"/>
-	<property name  = "webBaseURL"  value="http://www.cs.ucsb.edu/~${env.USER}/cs56/S12/issues"/>
-	<property name	= "projectName" value="0000763" />
+	<property name  = "webRoot"     
+		value="${env.HOME}/public_html/cs56/"/>
+	<property name  = "webBaseURL"
+		value="http://www.cs.ucsb.edu/~${env.USER}/cs56"/>
+	
+	<property name	= "projectName" value="edu/ucsb/cs56/projects/music/guitar_tuner" />
 	<property name	= "javadocDest"	value="${webRoot}/${projectName}/javadoc" />
 	<property name	= "javadocURL" 	value="${webBaseURL}/${projectName}/javadoc"/>
-	<property name  = "mainClass"   value="edu.ucsb.cs56.s12.choice.issue763.GuitarTuner" />
-	<property name	= "jwsDest"     value="${webRoot}/${projectName}/jws" />
-	<property name	= "jwsURL"      value="${webBaseURL}/${projectName}/jws"/>
-		
+	<property name  = "mainClass"   
+		value="edu.ucsb.cs56.projects.music.guitar_tuner.GuitarTuner" />
+
+	<property name="javadocLink" value="http://java.sun.com/javase/7/docs/api/" />
 	
 	<target name="compile" description="Compiles the code">
 		<mkdir dir="build"/>
@@ -21,7 +26,7 @@
 			<classpath>
 				<pathelement location="build"/>
 				<pathelement location="."/>
-				<pathelement location="/cs/faculty/pconrad/public_html/cs56/lib/junit-4.8.2.jar"/>
+				<pathelement location="lib/junit-4.8.2.jar"/>
 			</classpath><!--closes classpath-->
 		</javac>
         <copy file="fretboard.png" todir="build"/>
@@ -46,8 +51,9 @@
 		<javadoc destdir="javadoc" author="true" version="true" use="true" >
 			<fileset dir="src" includes="**/*.java"/>
 			<classpath>
-				<pathelement location="cs/faculty/pconrad/public_html/cs56/lib/junit-4.8.2.jar"/>
+				<pathelement location="lib/junit-4.8.2.jar"/>
 			</classpath>
+			<link href="${javadocLink}" />
 		</javadoc>
 
 		<!--deletes old javadoc-->
@@ -67,9 +73,10 @@
 	<target name="test" depends="compile" >
 		<junit haltonerror="no" haltonfailure="no">
 			<classpath>
-				<pathelement location="/cs/faculty/pconrad/public_html/cs56/lib/junit-4.8.2.jar"/>
+				<pathelement location="lib/junit-4.8.2.jar"/>
 				<pathelement location="build"/>
 			</classpath>
+			
 			<batchtest fork="yes">
 				<fileset dir="src">
 					<include name="**/*Test.java"/>
@@ -90,85 +97,6 @@
 			</fileset>-->
 		</jar>
 	</target><!-- closes jar -->
-
-
-	<target name="publish" depends="jar,javadoc,dist,jws,linenumbers" description="Publishes onto web">
-		<mkdir dir="${webRoot}/${projectName}"/>
-	
-		<delete dir="${webRoot}/${projectName}/browse" />
-		<mkdir dir="${webRoot}/${projectName}/browse" />
-		
-		<delete dir="${webRoot}/${projectName}/download" />
-		<mkdir dir="${webRoot}/${projectName}/download" />
-
-		<copy file="html/index.html" todir="${webRoot}/${projectName}"/>
-		
-		<copy todir="${webRoot}/${projectName}/download" >
-			<fileset dir="download"/>
-			<fileset dir="dist" />
-		</copy>
-
-		<copy file="build.xml" todir="${webRoot}/${projectName}/browse"/>
-		<copy todir="${webRoot}/${projectName}/browse/src" >
-			<fileset dir="src" />
-		</copy>
-        
-        <copy file="fretboard.png" todir="${webRoot}/${projectName}/browse/images"/>
-
-		<copy file="numberedsource.txt" todir="${webRoot}/${projectName}/browse"/>
-		
-		<chmod dir="${webRoot}/${projectName}"
-			perm="755" type="both" includes="**/*"/>
-		<echo>Project published to ${webBaseURL}/${projectName}</echo>
-	</target><!-- closes publish -->
-
-	<target name="dist" depends="" description="Creates compressed form of source">
-		<delete quiet="true">
-			<fileset dir="temp" includes="**/*" />
-			<fileset dir="download" includes="**/*"/>
-		</delete>
-
-		<mkdir dir="download" />
-		<mkdir dir="temp" />
-		<mkdir dir="temp/${projectName}" />
-
-		<copy todir="temp/${projectName}">
-			<fileset dir="."
-            
-			excludes="build/**, javadoc/**,**/**~,temp/**,dist/**,download/**"/>
-		</copy>
-
-		<tar destfile="temp/${projectName}.tar"
-			basedir="temp"
-			includes="${projectName}/**"
-		/>
-
-		<gzip zipfile="download/${projectName}.tgz"
-			src="temp/${projectName}.tar"
-		/>
-
-		<zip destfile="download/${projectName}.zip"
-			basedir="temp"
-			includes="${projectName}/**"
-		/>
-
-		<delete quiet="true">
-			<fileset dir="temp" includes="**/*"/>
-		</delete>
-	</target><!--closes download-->
-
-	<target name="jws" depends="compile,jar" description="Creates the jws">
-		<delete dir="${webRoot}/${projectName}/jws" />
-		<mkdir dir="${webRoot}/${projectName}/jws" />
-
-		<copy todir="${jwsDest}" file="dist/${projectName}.jar" />
-		<copy todir="${jwsDest}" >
- 			<fileset dir="jws" includes="*.html"/>
-			<fileset dir="jws" includes="*.jnlp"/>
-			<fileset dir="jws" includes=".htaccess"/>
-		</copy>
-		<echo>Java Web Start @ ${jwsURL}</echo>
-	</target><!-- closes jws-->
 
 	<target name="linenumbers" description="Creates a file containing all source files with line numbers" >
 		<exec executable="bash">
