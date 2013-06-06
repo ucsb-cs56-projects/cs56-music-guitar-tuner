@@ -49,6 +49,9 @@ public class GuitarTunerGui{
     private JButton stop = new JButton("Stop");
     private JButton tune = new JButton("Tune");
 
+    // Some variable to keep track of pitch
+    private int pitch = 0;
+
     // Initialize labels for frequencies and tuning
 
     private JLabel ELabel = new JLabel(" 82.407 Hz");
@@ -57,7 +60,7 @@ public class GuitarTunerGui{
     private JLabel GLabel = new JLabel("195.998 Hz");
     private JLabel BLabel = new JLabel("246.942 Hz");
     private JLabel eLabel = new JLabel("329.628 Hz");
-    private JLabel freqLabel = new JLabel("Press Tune to Start");
+    JLabel freqLabel = new JLabel("Press Pitch then Tune");
 
     //Initialize button group for radio buttons
     
@@ -224,9 +227,10 @@ public class GuitarTunerGui{
     } // End of runGUI()
     
     
-    // Create new thread for playing the pitch sounds
+    // Create new thread for playing/tuning the pitch sounds
     
     Sound sample = new Sound();
+    Tune   input = new Tune();
     
     public class SoundTypeListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
@@ -248,6 +252,7 @@ public class GuitarTunerGui{
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = E6;
             sample = new Sound(instrument, E6);
             sample.start();
 	    }
@@ -257,6 +262,7 @@ public class GuitarTunerGui{
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = A5;
             sample = new Sound(instrument, A5);
             sample.start();
         }
@@ -266,6 +272,7 @@ public class GuitarTunerGui{
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = D4;
             sample = new Sound(instrument, D4);
             sample.start();
         }
@@ -275,6 +282,7 @@ public class GuitarTunerGui{
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = G3;
             sample = new Sound(instrument, G3);
             sample.start();
         }
@@ -284,6 +292,7 @@ public class GuitarTunerGui{
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = B2;
             sample = new Sound(instrument, B2);
             sample.start();
         }
@@ -293,24 +302,34 @@ public class GuitarTunerGui{
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = E1;
             sample = new Sound(instrument, E1);
             sample.start();
         }
     } // End of E1Listener
+
+    public class TuneListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            if(!input.interrupted())
+                input.requestStop();
+            if(!sample.interrupted())
+                sample.requestStop();
+            if(pitch != 0) {
+                input = new Tune(pitch, freqLabel);
+                input.start();
+            }
+        }
+    } // End of TuneListener
     
     public class StopListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            if(!input.interrupted())
+                input.requestStop();
+            freqLabel.setText("Press Pitch then Tune");
         }
-	} // End of StopListener
-    
-    public class TuneListener implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            //do stuff
-        }
-    }
-    
+	} // End of StopListener    
     
 } // GuitarTunerGui
 
