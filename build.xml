@@ -19,15 +19,27 @@
 		value="edu.ucsb.cs56.projects.music.guitar_tuner.GuitarTuner" />
 
 	<property name="javadocLink" value="http://java.sun.com/javase/7/docs/api/" />
+
+	<property name="libPath1" value="lib/junit-4.8.2.jar" />
+	<property name="libPath2" value="lib/minim.jar" />
+	<property name="libPath3" value="lib/minim-spi.jar" />
+	<property name="libPath4" value="lib/jsminim.jar" />
+	<property name="libPath5" value="lib/jl1.0.jar" />
+	<property name="libPath6" value="lib/mp3spi1.9.4.jar" />
+	<property name="libPath7" value="lib/tritonus_aos.jar" />
+	<property name="libPath8" value="lib/tritonus_share.jar" />
+	<path id="classpath">
+		<fileset dir="lib" includes="*.jar"/>
+	</path>
 	
 	<target name="compile" description="Compiles the code">
 		<mkdir dir="build"/>
-		<javac srcdir="src" destdir="build" debuglevel="lines,source" includeantruntime="false" >
-			<classpath>
+		<javac srcdir="src" destdir="build" debuglevel="lines,source" includeantruntime="false" classpathref="classpath">
+			<!--<classpath>
 				<pathelement location="build"/>
 				<pathelement location="."/>
-				<pathelement location="lib/junit-4.8.2.jar"/>
-			</classpath><!--closes classpath-->
+				<pathelement location="lib/*.jar"/>
+			</classpath>-->
 		</javac>
         <copy file="fretboard.png" todir="build"/>
 		<echo>Compile Successful</echo>
@@ -51,7 +63,7 @@
 		<javadoc destdir="javadoc" author="true" version="true" use="true" >
 			<fileset dir="src" includes="**/*.java"/>
 			<classpath>
-				<pathelement location="lib/junit-4.8.2.jar"/>
+				<pathelement location="${libPath1}"/>
 			</classpath>
 			<link href="${javadocLink}" />
 		</javadoc>
@@ -73,7 +85,7 @@
 	<target name="test" depends="compile" >
 		<junit haltonerror="no" haltonfailure="no">
 			<classpath>
-				<pathelement location="lib/junit-4.8.2.jar"/>
+				<pathelement location="${libPath1}"/>
 				<pathelement location="build"/>
 			</classpath>
 			
@@ -91,6 +103,7 @@
 		<jar destfile="dist/${projectName}.jar" basedir="build">
 			<manifest>
 				<attribute name="Main-Class" value="${mainClass}"/>
+				<attribute name="Class-Path" value="${classpath}" />
 			</manifest>
 			<!--<fileset dir=".">
 				<include name="fretboard.png"/>
