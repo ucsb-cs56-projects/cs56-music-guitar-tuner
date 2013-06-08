@@ -314,10 +314,10 @@ public class GuitarTunerGui{
                 input.requestStop();
             if(!sample.interrupted())
                 sample.requestStop();
-            if(pitch != 0) {
+            //if(pitch != 0) {
                 input = new Tune(pitch, freqLabel);
                 input.start();
-            }
+            //}
         }
     } // End of TuneListener
     

@@ -5,8 +5,7 @@ import java.util.Arrays;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.*;
-import ddf.minim.*;
-import ddf.minim.analysis.FFT;
+import java.lang.Integer;
 
 public class Tune extends Thread {
 
@@ -49,24 +48,22 @@ public class Tune extends Thread {
 	// Override run method of Thread
 	public void run(){
 			msg.setText("Tuning...");
-							try {
-			final AudioFormat format = presetFormat();
-			DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-			line = (TargetDataLine) AudioSystem.getLine(info);
-			line.open(format);
-			line.start();
-			int bufferSize = (int) format.getSampleRate()*format.getFrameSize();
-			buffer = new byte[bufferSize];
-			MyAudioBuffer audioBuffer = new MyAudioBuffer(bufferSize);
+			try {
+			 final AudioFormat format = presetFormat();
+			 DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+			 line = (TargetDataLine) AudioSystem.getLine(info);
+			 line.open(format);
+			 line.start();
+			 int bufferSize = (int) format.getSampleRate()*format.getFrameSize();
+			 buffer = new byte[bufferSize];
 		
-			while(!stopRequested) {
+			 while(!stopRequested) {
 
-				line.read(buffer, 0, buffer.length);
+			 line.read(buffer, 0, buffer.length);
 
 				//System.out.println(Arrays.toString(buffer));
-				/* Now FFT with Minim package
-					Declare a MAudioBuffer with the buffer array we have
-					Declare an FFT with the MAudioBuffer
+				/* Now FFT
+					Declare an FFT
 					Find amp of pitch
 					If pitch isn't strong, need to tune
 					Find which way to tune
@@ -74,25 +71,46 @@ public class Tune extends Thread {
 
 				*/
 
-				//Convert bytes to float
-				ByteArrayInputStream bas = new ByteArrayInputStream(buffer);
-				DataInputStream ds = new DataInputStream(bas);
-				float[] fArr = new float[buffer.length / 4];  // 4 bytes per float
-				for (int i = 0; i < fArr.length; i++) {
-	    			try{
-    				fArr[i] = ds.readFloat();
-				} catch (IOException e) {System.err.println("shit");}
+				//Convert bytes to double
+			 ByteArrayInputStream bas = new ByteArrayInputStream(buffer);
+			 DataInputStream ds = new DataInputStream(bas);
+			 double[] dArr = new double[buffer.length / 8];  // 8 bytes per double
+			 for (int i = 0; i < dArr.length; i++) {
+	     		try {
+    	   		dArr[i] = ds.readDouble();
+				    } catch (IOException e) {System.err.println("Unable to readDouble");}
 				}
+        
+        int powerOfTwo = (int) Math.pow(dArr.length, 32 - Integer.numberOfLeadingZeros(dArr.length - 1));
 
-				//set buffer and FFT stuff
-				audioBuffer.set(fArr);
-				FFT myFFT = new FFT(fArr.length, format.getSampleRate());
-				myFFT.forward(fArr);
-				//harcoded for D4
-				msg.setText(Float.toString(myFFT.getFreq((float) 146.832)));
+        Complex[] data = new Complex[1024];
+        int counter = 0;
 
-			}
-			} catch(LineUnavailableException e) {
+        for(double temp : dArr) {
+          data[counter] = new Complex(temp, 0);
+          counter++;
+        }
+		
+
+		for(counter = 0; counter < 1024; counter++) {
+		  if(data[counter] == null)
+			data[counter] = new Complex(0,0);
+		}
+
+        Complex[] transform = FFT.fft(data);
+        counter = 0;
+        double[] answer = new double[transform.length];
+        for(Complex temp : transform) {
+		  //if(temp.im() != 0)
+          answer[counter] = temp.im();
+        }
+		
+		FFT.show(transform, "Transformed:");
+		
+		//msg.setText(answer[]);
+
+		  	}
+	   	} catch(LineUnavailableException e) {
 			System.err.println("Line Unavailable: " + e);
 			System.exit(-1);
 		}
@@ -112,6 +130,7 @@ public class Tune extends Thread {
 		this.interrupt();
 	}
 
+/*
 	public class MyAudioBuffer implements AudioBuffer {
 private float[] samples;
 
@@ -120,7 +139,7 @@ private float[] samples;
    * 
    * @param bufferSize
    *          the size of the buffer
-   */
+   *//*
   MyAudioBuffer(int bufferSize)
   {
     samples = new float[bufferSize];
@@ -157,7 +176,7 @@ private float[] samples;
    *          the first buffer
    * @param b2
    *          the second buffer
-   */
+   *//*
   public synchronized void mix(float[] b1, float[] b2)
   {
     if ((b1.length != b2.length)
@@ -176,7 +195,7 @@ private float[] samples;
 
   /**
    * Sets all of the values in this buffer to zero.
-   */
+   *//*
   public synchronized void clear()
   {
     samples = new float[samples.length];
@@ -200,5 +219,5 @@ private float[] samples;
     System.arraycopy(samples, 0, ret, 0, samples.length);
     return ret;
   }
-	}
+	}*/
 }
