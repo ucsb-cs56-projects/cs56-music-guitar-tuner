@@ -1,0 +1,24 @@
+Noah Malik and Jonathan Moody, 6/7/2013
+Issue #1 for cs56-music-guitar-tuner
+
+* Changes Summary *
+
+- Created new JLabels inside GuitarTunerGui.java that show the pitch of each string in Hz
+
+- Created a new Tune JButton next to the Stop JButton. The Tune JButton can be clicked to start recording
+  sound from a microphone. (The Tune JButton listens for a click and creates a new Tune.java object that 
+  tunes to the most recent string button clicked)
+  
+- Created a new class Tune.java that creates an FFT object to find the amplitude of the frequency we want
+  to tune to. We want the FFT to tell us which amplitude is the maximum amplitude so that we know whether
+  to tune the guitar up or down. We have not yet implemented this.
+  
+- We used FFT.java and Complex.java, both of which are open source from MIT
+
+	- Complex.java is a data type for complex numbers
+	- FFT.java takes an array of complex numbers as an input and performs a fast fourier transform on
+	  the array
+
+- We know that the Tune.java class is properly recording sound using the microphone and that the FFT.java
+  class is performing a fast fourier transform on the recorded data, but we are unsure what exactly this
+  transformed data tells us

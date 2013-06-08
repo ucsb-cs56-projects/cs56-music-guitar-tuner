@@ -1,5 +1,6 @@
 package edu.ucsb.cs56.projects.music.guitar_tuner;
 import javax.swing.*;
+import javax.swing.JLabel;
 import javax.imageio.*;
 import java.io.*;
 import java.awt.*;
@@ -40,13 +41,27 @@ public class GuitarTunerGui{
     private JPanel panelS = new JPanel();
     
     private JButton E = new JButton("E6");
-    private JButton A  = new JButton("A5");
+    private JButton A = new JButton("A5");
     private JButton D = new JButton("D4");
     private JButton G = new JButton("G3");
     private JButton B = new JButton("B2");
     private JButton e = new JButton("E1");
     private JButton stop = new JButton("Stop");
-    
+    private JButton tune = new JButton("Tune");
+
+    // Some variable to keep track of pitch
+    private int pitch = 0;
+
+    // Initialize labels for frequencies and tuning
+
+    private JLabel ELabel = new JLabel(" 82.407 Hz");
+    private JLabel ALabel = new JLabel("110.000 Hz");
+    private JLabel DLabel = new JLabel("146.832 Hz");
+    private JLabel GLabel = new JLabel("195.998 Hz");
+    private JLabel BLabel = new JLabel("246.942 Hz");
+    private JLabel eLabel = new JLabel("329.628 Hz");
+    JLabel freqLabel = new JLabel("Press Pitch then Tune");
+
     //Initialize button group for radio buttons
     
     final ButtonGroup soundType = new ButtonGroup();
@@ -71,7 +86,7 @@ public class GuitarTunerGui{
     public static final int ACOUSTIC_STEEL = 25; 
     public static final int HARMONICS = 32;
     public static final int ACOUSTIC_NYLON = 26;
-    public static final int E6 = 40; // MIDI code for E string (lower octave) 
+    public static final int E6 = 40; // MIDI code for E string (lower octave)
     public static final int A5 = 45; // MIDI code for A string
     public static final int D4 = 50; // MIDI code for D string
     public static final int G3 = 55; // MIDI code for G string
@@ -127,14 +142,33 @@ public class GuitarTunerGui{
         buttonBar.add(Box.createVerticalGlue());
         buttonBar.add(E);
         buttonBar.add(Box.createVerticalGlue());
+
+        // Add the frequency labels to a vertical box
+
+        Box freqBar = Box.createVerticalBox();
+        freqBar.add(Box.createVerticalGlue());
+        freqBar.add(eLabel);
+        freqBar.add(Box.createVerticalGlue());
+        freqBar.add(BLabel);
+        freqBar.add(Box.createVerticalGlue());
+        freqBar.add(GLabel);
+        freqBar.add(Box.createVerticalGlue());
+        freqBar.add(DLabel);
+        freqBar.add(Box.createVerticalGlue());
+        freqBar.add(ALabel);
+        freqBar.add(Box.createVerticalGlue());
+        freqBar.add(ELabel);
+        freqBar.add(Box.createVerticalGlue());
         
         // Add Fretboard picture to center 
         
         panelC.add(picLabel);
         
-        // Add stop button to bottom of panel
+        // Add tune and stop buttons to bottom of panel
         
         panelS.add(stop);
+        panelS.add(tune);
+        panelS.add(freqLabel);
         
         // Button ActionListeners
         
@@ -147,6 +181,7 @@ public class GuitarTunerGui{
         
         // Added Stop button ActionListener
         
+        tune.addActionListener(new TuneListener());
         stop.addActionListener(new StopListener());
         
         // set ActionCommand & ActionListener for radio buttons
@@ -178,6 +213,7 @@ public class GuitarTunerGui{
         //Add panel/box content to frame
         
         f.add(buttonBar, BorderLayout.WEST);
+        f.add(freqBar, BorderLayout.EAST);
         f.add(BorderLayout.CENTER, panelC);
         f.add(BorderLayout.NORTH, panelN);
         f.add(BorderLayout.SOUTH, panelS);
@@ -191,9 +227,10 @@ public class GuitarTunerGui{
     } // End of runGUI()
     
     
-    // Create new thread for playing the pitch sounds
+    // Create new thread for playing/tuning the pitch sounds
     
     Sound sample = new Sound();
+    Tune   input = new Tune();
     
     public class SoundTypeListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
@@ -209,70 +246,90 @@ public class GuitarTunerGui{
             if(choice == "harmonics")
                 instrument = HARMONICS;
         }
-    }
+    } // End of SountTypeListener
     
     public class E6Listener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = E6;
             sample = new Sound(instrument, E6);
             sample.start();
 	    }
-	}
+	} // End of E6Listener
     
     public class A5Listener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = A5;
             sample = new Sound(instrument, A5);
             sample.start();
         }
-    }
+    } // End of A5Listener
     
     public class D4Listener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = D4;
             sample = new Sound(instrument, D4);
             sample.start();
         }
-    }
+    } // End of D4Listener
     
     public class G3Listener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = G3;
             sample = new Sound(instrument, G3);
             sample.start();
         }
-    }
+    } // End of G3Listener
     
     public class B2Listener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = B2;
             sample = new Sound(instrument, B2);
             sample.start();
         }
-    }
+    } // End of B2Listener
     
     public class E1Listener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            pitch = E1;
             sample = new Sound(instrument, E1);
             sample.start();
         }
-    }
+    } // End of E1Listener
+
+    public class TuneListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            if(!input.interrupted())
+                input.requestStop();
+            if(!sample.interrupted())
+                sample.requestStop();
+            //if(pitch != 0) {
+                input = new Tune(pitch, freqLabel);
+                input.start();
+            //}
+        }
+    } // End of TuneListener
     
     public class StopListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             if(!sample.interrupted())
                 sample.requestStop();
+            if(!input.interrupted())
+                input.requestStop();
+            freqLabel.setText("Press Pitch then Tune");
         }
-	}
-    
-    
+	} // End of StopListener    
     
 } // GuitarTunerGui
 
