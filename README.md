@@ -1,3 +1,4 @@
+W14 Ready! (Bronwyn Perry-Huston)
 # cs56-music-guitar-tuner
 
 Standard tuner for 6 string guitar, playing the E-A-d-g-b-e strings. 
